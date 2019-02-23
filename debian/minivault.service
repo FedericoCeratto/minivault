@@ -1,0 +1,52 @@
+# minivault systemd target
+
+[Unit]
+Description=minivault
+Documentation=man:minivault
+Before=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/minivault
+TimeoutStopSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+
+# required
+User=root
+
+Restart=on-abnormal
+RestartSec=2s
+#LimitNOFILE=65536
+
+WorkingDirectory=/
+#WatchdogSec=30s
+
+# Hardening
+NoNewPrivileges=yes
+
+# required
+CapabilityBoundingSet=CAP_DAC_OVERRIDE CAP_SYS_PTRACE
+
+# Configure system call filtering
+SystemCallFilter=@memlock @system-service
+SystemCallFilter=~connect
+
+ProtectSystem=strict
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectKernelModules=true
+ProtectKernelTunables=yes
+
+# required
+PrivateUsers=no
+
+StandardOutput=syslog
+StandardError=syslog
+
+ReadWriteDirectories=-/proc/self
+ReadWriteDirectories=-/var/run
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,78 @@
+
+=== Minivault
+
+image:https://img.shields.io/badge/status-alpha-orange.svg[badge]
+image:https://img.shields.io/github/tag/FedericoCeratto/minivault.svg[tags]
+image:https://img.shields.io/badge/License-GPL%20v3-blue.svg[License]
+
+Local credentials vault with a permission model.
+
+==== Usage
+
+Application side:
+
+* Fetch credentials using HTTP: http://127.0.0.1:5588/v1/MyCredentialName
+* Delete credentials from memory immediately after use. Fetch it again when needed.
+
+Minivault:
+
+* Configure credentials in /etc/minivault.conf (See example.conf)
+* Access can be filtered by executable paths, UIDs, GIDs
+* If the binpaths, gids, uids keys are not specified everything will match
+
+Example:
+[source,json]
+----
+{
+  "format-version": 1,
+    "credentials": {
+      "mycredential": {
+        "binpaths": ["/usr/bin/curl"],
+        "gids": [1000],
+        "uids": [1000, 1001],
+        "value": "*SECRET*"
+      },
+      "nouid": {
+        "uids": [0],
+        "value": "The UID cannot match"
+      },
+      "nogid": {
+        "gids": [0],
+        "value": "The UID cannot match"
+      },
+      "noexe": {
+        "binpaths": ["/usr/bin/nonexistentbinary"],
+        "value": "The bin path cannot match"
+      }
+    }
+}
+----
+
+==== System-wide installation
+
+Install Nim (devel or later than 0.19.4) on Debian/Ubuntu with:
+
+    sudo apt install nim
+
+Build and install the package with:
+
+    nimble build_deb
+    sudo dpkg -i ../minivault_*.deb
+
+Monitor with:
+
+    sudo journalctl -f -u minivault
+
+==== Local run
+
+Build a binary with:
+
+    nimble build
+
+Run:
+
+    ./minivault
+
+==== Contributing
+
+Testing and PRs are welcome.

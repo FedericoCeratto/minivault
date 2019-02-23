@@ -1,0 +1,14 @@
+Source: minivault
+Section: admin
+Priority: optional
+Maintainer: Federico Ceratto <federico.ceratto@gmail.com>
+Build-Depends: debhelper-compat (= 12),
+ dh-systemd
+Standards-Version: 4.3.1
+
+Package: minivault
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Local credentials vault with a permission model
+ Serve credentials over HTTP on localhost.
+ Allows filtering by client path name, UID, GID.
