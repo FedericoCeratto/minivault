@@ -5,7 +5,12 @@ image:https://img.shields.io/badge/status-alpha-orange.svg[badge]
 image:https://img.shields.io/github/tag/FedericoCeratto/minivault.svg[tags]
 image:https://img.shields.io/badge/License-GPL%20v3-blue.svg[License]
 
-Local credentials vault with a permission model.
+Local credentials vault with a granular permission model.
+
+Credential access can be granted by executable path, UIDs and GIDs.
+
+This allow more secure handling of credentials compared to the file
+system access control
 
 ==== Usage
 
@@ -18,7 +23,7 @@ Minivault:
 
 * Configure credentials in /etc/minivault.conf (See example.conf)
 * Access can be filtered by executable paths, UIDs, GIDs
-* If the binpaths, gids, uids keys are not specified everything will match
+* If the binpaths, gids, uids keys are not specified anything will match
 
 Example:
 [source,json]
@@ -30,19 +35,15 @@ Example:
         "binpaths": ["/usr/bin/curl"],
         "gids": [1000],
         "uids": [1000, 1001],
-        "value": "*SECRET*"
+        "value": "This is the secret value. Only curl can fetch it."
       },
-      "nouid": {
-        "uids": [0],
-        "value": "The UID cannot match"
+      "credentials2": {
+        "uids": [1000],
+        "value": "Every application run by the user with ID 1000 can read this"
       },
-      "nogid": {
-        "gids": [0],
-        "value": "The UID cannot match"
-      },
-      "noexe": {
-        "binpaths": ["/usr/bin/nonexistentbinary"],
-        "value": "The bin path cannot match"
+      "credentials3": {
+        "binpaths": ["/usr/bin/python"],
+        "value": "Every application written in Python, regardless of UID/GID, can read this (!)"
       }
     }
 }
